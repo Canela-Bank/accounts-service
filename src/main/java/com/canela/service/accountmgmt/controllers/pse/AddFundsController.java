@@ -2,9 +2,9 @@ package com.canela.service.accountmgmt.controllers.pse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.PatternProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +13,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
+import org.json.JSONObject;
 
 @RestController
 @RequestMapping(value = "/api/accounts")
@@ -29,21 +28,61 @@ public class AddFundsController {
                                            @RequestBody PseRequest req) {
 
         URL url = null;
-        String response = null;
         try {
+            //Connection with PSE
             url = new URL("http://localhost:9010/pse/approval/send-response"); //TODO: Change when providers integrator is ready
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             int codeResponse = conn.getResponseCode();
-            if(codeResponse == HttpURLConnection.HTTP_OK){
-                //TODO: Calculate total fund and update in database
+
+            //If the connection is successful
+            if(codeResponse == HttpURLConnection.HTTP_ACCEPTED){
+
+                //Connection with GraphQL
+                URL getAccountUrl = new URL("http://10.1.0.0:3001/graphql?query=%7B%0A%20%20getAccountById%20(id%3A%" + id + ")%7B%0A%20%20%20%20id%0A%20%20%20%20balance%0A%20%20%20%20user_id%0A%20%20%7D%0A%7D%0A");
+                HttpURLConnection connAccount = (HttpURLConnection) getAccountUrl.openConnection();
+                connAccount.setRequestMethod("GET");
+
+                //If the connection is successful
+                if(connAccount.getResponseCode() == HttpURLConnection.HTTP_OK){
+                    //Obtain body information
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connAccount.getInputStream()));
+                    String inputLine;
+                    StringBuilder responseBuff = new StringBuilder();
+
+                    while ((inputLine = in.readLine()) != null) {
+                        responseBuff.append(inputLine);
+                    }
+                    in.close();
+
+                    //Parse to JSON the String obtained
+                    JSONObject jsonData = new JSONObject(responseBuff.toString());
+                    JSONObject jsonGetAccount = new JSONObject(jsonData.get("data").toString());
+                    String accountInfo = jsonGetAccount.get("getAccountById").toString();
+                    JSONObject jsonAccount = new JSONObject(accountInfo);
+
+                    //Get new balance
+                    long newBalance = Long.parseLong((String) jsonAccount.get("balance"))+ req.getAmount();
+                    String user_id = (String) jsonAccount.get("user_id");
+
+                    //Update balance of the account
+                    URL updateAccount = new URL("http://10.1.0.0:3001/graphql?query=mutation%7B%0A%20%20%20createAccount(id%3A%"+ id +"%22%2C%20balance%3A%20"+ newBalance +"%2C%20user_id%3A%20%22"+ user_id+"%22)%7B%0A%20%20%20%20id%2C%0A%20%20%20%20balance%2C%0A%20%20%20%20user_id%0A%20%20%7D%0A%7D%0A");
+                    HttpURLConnection connUpdate = (HttpURLConnection) updateAccount.openConnection();
+                    connUpdate.setRequestMethod("GET");
+
+                    if(connUpdate.getResponseCode() == HttpURLConnection.HTTP_OK){
+                        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Monto actualizado");
+                    } else {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Monto no pudo ser actualizado");
+                    }
+                } else {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se encontró la cuenta");
+                }
             }
-        } catch (MalformedURLException | ProtocolException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (IOException | JSONException e) {
             throw new RuntimeException(e);
         }
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("El body es " + response);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("");
     }
 
     static class PseRequest {
