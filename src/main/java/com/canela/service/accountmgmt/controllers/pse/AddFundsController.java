@@ -39,7 +39,7 @@ public class AddFundsController {
             if(codeResponse == HttpURLConnection.HTTP_ACCEPTED){
 
                 //Connection with GraphQL
-                URL getAccountUrl = new URL("http://10.1.0.0:3001/graphql?query=%7B%0A%20%20getAccountById%20(id%3A%" + id + ")%7B%0A%20%20%20%20id%0A%20%20%20%20balance%0A%20%20%20%20user_id%0A%20%20%7D%0A%7D%0A");
+                URL getAccountUrl = new URL("http://10.1.0.0:3001/graphql?query=%7B%0A%20%20getAccountById%20(id%3A%22"+ id +"%22)%7B%0A%20%20%20%20id%0A%20%20%20%20balance%0A%20%20%20%20user_id%0A%20%20%7D%0A%7D%0A");
                 HttpURLConnection connAccount = (HttpURLConnection) getAccountUrl.openConnection();
                 connAccount.setRequestMethod("GET");
 
@@ -62,13 +62,13 @@ public class AddFundsController {
                     JSONObject jsonAccount = new JSONObject(accountInfo);
 
                     //Get new balance
-                    long newBalance = Long.parseLong((String) jsonAccount.get("balance"))+ req.getAmount();
+                    long newBalance = Integer.parseInt(jsonAccount.get("balance").toString())+ req.getAmount();
                     String user_id = (String) jsonAccount.get("user_id");
 
                     //Update balance of the account
-                    URL updateAccount = new URL("http://10.1.0.0:3001/graphql?query=mutation%7B%0A%20%20%20createAccount(id%3A%"+ id +"%22%2C%20balance%3A%20"+ newBalance +"%2C%20user_id%3A%20%22"+ user_id+"%22)%7B%0A%20%20%20%20id%2C%0A%20%20%20%20balance%2C%0A%20%20%20%20user_id%0A%20%20%7D%0A%7D%0A");
+                    URL updateAccount = new URL("http://10.1.0.0:3001/graphql?query=mutation%7B%0A%20%20createAccount%20(id%3A%22"+ id +"%22%2C%20balance%3A%20"+ newBalance +"%2C%20user_id%3A%20%22"+ user_id +"%22)%7B%0A%20%20%20%20id%0A%20%20%20%20balance%0A%20%20%20%20user_id%0A%20%20%7D%0A%7D%0A");
                     HttpURLConnection connUpdate = (HttpURLConnection) updateAccount.openConnection();
-                    connUpdate.setRequestMethod("GET");
+                    connUpdate.setRequestMethod("POST");
 
                     if(connUpdate.getResponseCode() == HttpURLConnection.HTTP_OK){
                         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Monto actualizado");
