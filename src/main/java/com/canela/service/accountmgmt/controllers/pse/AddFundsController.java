@@ -30,13 +30,13 @@ public class AddFundsController {
         URL url = null;
         try {
             //Connection with PSE
-            url = new URL("http://localhost:9010/pse/approval/send-response"); //TODO: Change when providers integrator is ready
+            url = new URL("http://10.2.0.0:3000/api/prov/pse/approve"); //TODO: Change when providers integrator is ready
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             int codeResponse = conn.getResponseCode();
 
             //If the connection is successful
-            if(codeResponse == HttpURLConnection.HTTP_ACCEPTED){
+            if(codeResponse == HttpURLConnection.HTTP_OK){
 
                 //Connection with GraphQL
                 URL getAccountUrl = new URL("http://10.1.0.0:3001/graphql?query=%7B%0A%20%20getAccountById%20(id%3A%22"+ id +"%22)%7B%0A%20%20%20%20id%0A%20%20%20%20balance%0A%20%20%20%20user_id%0A%20%20%7D%0A%7D%0A");
