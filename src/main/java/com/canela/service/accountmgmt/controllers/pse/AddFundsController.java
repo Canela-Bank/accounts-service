@@ -30,7 +30,7 @@ public class AddFundsController {
         URL url = null;
         try {
             //Connection with PSE
-            url = new URL("http://10.2.0.0:3000/api/prov/pse/approve"); //TODO: Change when providers integrator is ready
+            url = new URL("http://10.2.0.0:3000/api/prov/pse/approve");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             int codeResponse = conn.getResponseCode();
@@ -58,25 +58,29 @@ public class AddFundsController {
                     //Parse to JSON the String obtained
                     JSONObject jsonData = new JSONObject(responseBuff.toString());
                     JSONObject jsonGetAccount = new JSONObject(jsonData.get("data").toString());
-                    String accountInfo = jsonGetAccount.get("getAccountById").toString();
-                    JSONObject jsonAccount = new JSONObject(accountInfo);
-
-                    //Get new balance
-                    long newBalance = Integer.parseInt(jsonAccount.get("balance").toString())+ req.getAmount();
-                    String user_id = (String) jsonAccount.get("user_id");
-
-                    //Update balance of the account
-                    URL updateAccount = new URL("http://10.1.0.0:3001/graphql?query=mutation%7B%0A%20%20createAccount%20(id%3A%22"+ id +"%22%2C%20balance%3A%20"+ newBalance +"%2C%20user_id%3A%20%22"+ user_id +"%22)%7B%0A%20%20%20%20id%0A%20%20%20%20balance%0A%20%20%20%20user_id%0A%20%20%7D%0A%7D%0A");
-                    HttpURLConnection connUpdate = (HttpURLConnection) updateAccount.openConnection();
-                    connUpdate.setRequestMethod("POST");
-
-                    if(connUpdate.getResponseCode() == HttpURLConnection.HTTP_OK){
-                        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Monto actualizado");
+                    if(jsonGetAccount.get("getAccountById").toString().equals("null")){
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se encontró la cuenta");
                     } else {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Monto no pudo ser actualizado");
+                        String accountInfo = jsonGetAccount.get("getAccountById").toString();
+                        JSONObject jsonAccount = new JSONObject(accountInfo);
+
+                        //Get new balance
+                        long newBalance = Integer.parseInt(jsonAccount.get("balance").toString()) + req.getAmount();
+                        String user_id = (String) jsonAccount.get("user_id");
+
+                        //Update balance of the account
+                        URL updateAccount = new URL("http://10.1.0.0:3001/graphql?query=mutation%7B%0A%20%20createAccount%20(id%3A%22" + id + "%22%2C%20balance%3A%20" + newBalance + "%2C%20user_id%3A%20%22" + user_id + "%22)%7B%0A%20%20%20%20id%0A%20%20%20%20balance%0A%20%20%20%20user_id%0A%20%20%7D%0A%7D%0A");
+                        HttpURLConnection connUpdate = (HttpURLConnection) updateAccount.openConnection();
+                        connUpdate.setRequestMethod("POST");
+
+                        if (connUpdate.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Monto actualizado");
+                        } else {
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Monto no pudo ser actualizado");
+                        }
                     }
                 } else {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se encontró la cuenta");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Solicitud rechazada");
                 }
             }
         } catch (IOException | JSONException e) {
