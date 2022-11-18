@@ -1,6 +1,19 @@
 server:
-  port: 9001
+  port: 9002
 
 application:
   name: Accounts management service
   description: API created to manage users bank accounts
+
+spring:
+    mail:
+      host: smtp.gmail.com
+      port: 587
+      username: canelabank@gmail.com
+      password: qmippwdhmjtcyukd
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true
