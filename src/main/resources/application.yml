@@ -1,0 +1,6 @@
+server:
+  port: 9006
+
+application:
+  name: Service Account Management 
+  description: API created to manage accounts 
