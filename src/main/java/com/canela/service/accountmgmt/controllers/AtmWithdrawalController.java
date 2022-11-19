@@ -1,7 +1,6 @@
 package com.canela.service.accountmgmt.controllers;
 
 
-import com.canela.service.accountmgmt.repositories.SavingsAccountRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,8 +23,6 @@ import java.net.URL;
 @Tag(name = "Account", description = "Account REST API")
 public class AtmWithdrawalController {
 
-    @Autowired
-    private SavingsAccountRepository repoSavings;
     @Operation(summary = "withdraw from  saving account", description = "Using an ATM to withdraw money from savings account", tags = {"Account"})
     @PostMapping(value = "withdraw/atm/{accountId}")
     @CrossOrigin("*")
