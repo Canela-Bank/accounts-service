@@ -1,25 +1,28 @@
 package com.canela.service.createnewsavingaccount.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/accounts")
 public class CreateSavingsAccountController {
-    @PostMapping(value = "accounts/{accountId}/create-savings" )
-    public ResponseEntity<String> createNewAccount(@PathVariable String initialAmount) {
+    @PostMapping(value = "/create-savings" )
+    public ResponseEntity<String> createNewAccount(@RequestBody String initialAmount) throws JsonProcessingException {
+        Map<String, Object> values = new ObjectMapper().readValue(initialAmount, HashMap.class);
+        String InitialAmount = (String) values.get("InitialAmount");
         try{
-            URL url = new URL("http://localhost:9010/accounts/new-savings");
+            URL url = new URL("http://localhost:8080/graphql?query=mutation{createCreditQuery(InitalAmount)");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             int resp = conn.getResponseCode();
