@@ -1,13 +1,13 @@
-package com.canela.service.createnewsavingaccount;
+package com.canela.service.accountmgmt;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CreateNewSavingAccountApplication {
+public class AccountMgmtApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CreateNewSavingAccountApplication.class, args);
+        SpringApplication.run(AccountMgmtApplication.class, args);
     }
 
 }
