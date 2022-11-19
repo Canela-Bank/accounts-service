@@ -15,8 +15,10 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,14 +28,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @RequestMapping(value = "/api/accounts")
 public class GetUserAccountsController {
 
-	 @GetMapping(value = "/getAccounts" )
-	 @CrossOrigin("*")
-	    public ResponseEntity<String> getAccounts(@RequestBody accountRequest request) {	 
+	 @GetMapping(value = "/getAccounts/{document}/{typeDocument}" )
+	    public ResponseEntity<String> getAccounts(@PathVariable String document, @PathVariable String typeDocument) {	 
 		 
 		 try {
 			 String url = "http://localhost:3001/graphql";
 			 String operation = "getAccountsByUser";
-			 String query = "query{getAccountsByUser(user_document:\""+request.userDocument+"\",user_document_type:"+ request.typeDocument+"){\n"
+			 String query = "query{getAccountsByUser(user_document:\""+document+"\",user_document_type:"+ typeDocument+"){\n"
 			 		+ "  id\n"
 			 		+ "  balance\n"
 			 		+ "  user_id\n"
