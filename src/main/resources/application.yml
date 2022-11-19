@@ -1,0 +1,6 @@
+server:
+  port: 9005
+
+application:
+  name: Accounts management service
+  description: API created to manage users bank accounts
