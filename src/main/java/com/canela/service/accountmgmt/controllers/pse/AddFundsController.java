@@ -28,7 +28,6 @@ public class AddFundsController {
 
     @Operation(summary = "Add funds via PSE", description = "Add funds to the selected account from another bank via PSE", tags = {"Account"})
     @PutMapping(value = "add-funds/pse/{accountId}")
-    @CrossOrigin("*")
     public ResponseEntity<String> addFunds(@PathVariable(value = "accountId")
                                            @Parameter(name = "Amount id", description = "Number of the account that will be updated", example = "33023227") String id,
                                            @RequestBody PseRequest req) {
