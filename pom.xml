@@ -8,12 +8,6 @@
         <version>2.7.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-      <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io/</url>
-        </repository>
-    </repositories>
     <groupId>com.canela.service</groupId>
     <artifactId>account-mgmt</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -51,14 +45,8 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.SMFragale</groupId>
-            <artifactId>GraphQLCanelaLibrary</artifactId>
-            <version>V1.0.1</version>
-        </dependency>
-        <dependency>
 		    <groupId>org.apache.httpcomponents</groupId>
 		    <artifactId>httpclient</artifactId>
-		    <version>4.5.13</version>
 		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
