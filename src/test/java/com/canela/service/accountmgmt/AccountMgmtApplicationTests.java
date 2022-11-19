@@ -1,10 +1,10 @@
-package com.canela.service.createnewsavingaccount;
+package com.canela.service.accountmgmt;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CreateNewSavingAccountApplicationTests {
+class AccountMgmtApplicationTests {
 
     @Test
     void contextLoads() {
