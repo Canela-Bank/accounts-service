@@ -27,13 +27,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @RestController
 @RequestMapping(value = "/api/accounts")
 public class ViewAccountMovementsController {
-
 	 @GetMapping(value = "/viewMovements/{accountId}" )
 	 @CrossOrigin("*")
-	    public ResponseEntity<String> viewMovements(@PathVariable String accountId) {	 
-		 
+	    public ResponseEntity<String> viewMovements(@PathVariable String accountId) {
 		 try {
-			 String url = "http://localhost:3001/graphql";
+			 String url = "http://10.1.0.19:3002/graphql";
 			 String operation = "getMovementsByOriginAccount";
 			 String query = "query{getMovementsByOriginAccount(account_id:\""+accountId+"\"){\n"
 			 		+ "  origin_account\n"
@@ -68,18 +66,11 @@ public class ViewAccountMovementsController {
 					        
 					     return ResponseEntity.status(HttpURLConnection.HTTP_OK).body(MovementsAccount.toString());
 			        }
-			        
-			       
- 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 			
-		}	
-		
-		
-
-}
-	 
+		}
+	}
 }
 
 

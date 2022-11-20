@@ -20,7 +20,7 @@ public class DeleteAccount {
     public ResponseEntity<String> delete(@PathVariable String account){
         URL url = null;
         try {
-            url = new URL("http://localhost:4000/graphql?query=mutation{deleteAccount(ac1:\""+ account +"\"){id}}");
+            url = new URL("http://10.1.0.19:3002/graphql?query=mutation{deleteAccount(ac1:\""+ account +"\"){id}}");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             int response = conn.getResponseCode();

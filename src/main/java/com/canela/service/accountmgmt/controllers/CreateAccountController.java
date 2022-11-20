@@ -29,7 +29,7 @@ public class CreateAccountController {
 
         try {
             // GraphQL info
-            String url = "http://localhost:3001/graphql";
+            String url = "http://10.1.0.19:3002/graphql";
             String operation = "createAccount"; //INSERT OPERATION QUERY HERE
             String query = "mutation{createAccount(id:\""+newAccount.userDocument+"\",balance:"+newAccount.balance+",user_id:\""+newAccount.userDocument+"\",user_document_type:"+newAccount.typeDocument+"){\n"
                     + "  id\n"

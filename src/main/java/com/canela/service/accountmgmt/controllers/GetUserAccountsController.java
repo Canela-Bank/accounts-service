@@ -27,12 +27,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @RestController
 @RequestMapping(value = "/api/accounts")
 public class GetUserAccountsController {
-
 	 @GetMapping(value = "/getAccounts/{document}/{typeDocument}" )
-	    public ResponseEntity<String> getAccounts(@PathVariable String document, @PathVariable String typeDocument) {	 
-		 
+	    public ResponseEntity<String> getAccounts(@PathVariable String document, @PathVariable String typeDocument) {
 		 try {
-			 String url = "http://localhost:3001/graphql";
+			 String url = "http://10.1.0.19:3002/graphql";
 			 String operation = "getAccountsByUser";
 			 String query = "query{getAccountsByUser(user_document:\""+document+"\",user_document_type:"+ typeDocument+"){\n"
 			 		+ "  id\n"
@@ -66,28 +64,27 @@ public class GetUserAccountsController {
 					        
 					     return ResponseEntity.status(HttpURLConnection.HTTP_OK).body(UserAccounts.toString());
 			        }
-
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-			
-		}	
-		 	 
-		
+		}
 	 }
 	 
 	 static class accountRequest {
-
 	     private String userDocument;
 	     private int typeDocument;
+
 		public String getUserDocument() {
 			return userDocument;
 		}
+
 		public void setUserDocument(String userDocument) {
 			this.userDocument = userDocument;
 		}
+
 		public int getTypeDocument() {
 			return typeDocument;
 		}
+
 		public void setTypeDocument(int typeDocument) {
 			this.typeDocument = typeDocument;
 		}

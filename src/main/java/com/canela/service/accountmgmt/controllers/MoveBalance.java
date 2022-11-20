@@ -20,7 +20,7 @@ public class MoveBalance {
     @PostMapping("/{ac1}/{ac2}")
     public ResponseEntity<String> move(@PathVariable String ac1, @PathVariable String ac2){
         try {
-            URL url = new URL("http://localhost:4000/graphql?query={getAccount(ac1:\"" + ac1 + "\"){id,balance}}");
+            URL url = new URL("http://10.1.0.19:3002/graphql?query={getAccount(ac1:\"" + ac1 + "\"){id,balance}}");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             int response = conn.getResponseCode();
