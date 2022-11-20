@@ -1,10 +1,10 @@
 server:
-  port: 9002
+  port: 9005
 
 application:
-  name: Accounts management service
-  description: API created to manage users bank accounts
-
+  name: Service Account Management 
+  description: API created to manage accounts 
+  
 spring:
     mail:
       host: smtp.gmail.com
