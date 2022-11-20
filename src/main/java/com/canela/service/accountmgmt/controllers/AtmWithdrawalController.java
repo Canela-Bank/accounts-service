@@ -1,19 +1,14 @@
 package com.canela.service.accountmgmt.controllers;
 
-
-import com.canela.service.accountmgmt.repositories.SavingsAccountRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -23,18 +18,12 @@ import java.net.URL;
 @RequestMapping(value = "/api/account")
 @Tag(name = "Account", description = "Account REST API")
 public class AtmWithdrawalController {
-
-    @Autowired
-    private SavingsAccountRepository repoSavings;
     @Operation(summary = "withdraw from  saving account", description = "Using an ATM to withdraw money from savings account", tags = {"Account"})
     @PostMapping(value = "withdraw/atm/{accountId}")
     @CrossOrigin("*")
-
     public ResponseEntity<String> addFunds(@PathVariable(value = "accountId")
                                            @Parameter(name = "Amount id", description = "Number of the account that will be updated", example = "33023227") String id,
                                            @RequestBody AtmRequest req) {
-
-
         String response = null;
         try {
             URL url = new URL("http://localhost:9010/redaval/solicitud"); //TODO: Change when providers integrator is ready
