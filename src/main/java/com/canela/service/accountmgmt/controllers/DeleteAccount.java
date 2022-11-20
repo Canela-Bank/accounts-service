@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.net.*;
 
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/api/accounts")
 public class DeleteAccount {
     @Value("${integrators.data.ip}")
     private String dataIp;
