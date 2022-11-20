@@ -15,6 +15,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,14 +28,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @RequestMapping(value = "/api/accounts")
 public class ViewAccountMovementsController {
 
-	 @GetMapping(value = "/viewMovements" )
+	 @GetMapping(value = "/viewMovements/{accountId}" )
 	 @CrossOrigin("*")
-	    public ResponseEntity<String> viewMovements(@RequestBody movementsRequest request) {	 
+	    public ResponseEntity<String> viewMovements(@PathVariable String accountId) {	 
 		 
 		 try {
 			 String url = "http://localhost:3001/graphql";
 			 String operation = "getMovementsByOriginAccount";
-			 String query = "query{getMovementsByOriginAccount(account_id:\""+request.accountId+"\"){\n"
+			 String query = "query{getMovementsByOriginAccount(account_id:\""+accountId+"\"){\n"
 			 		+ "  origin_account\n"
 			 		+ "  destination_account\n"
 			 		+ "  amount\n"
@@ -78,19 +79,7 @@ public class ViewAccountMovementsController {
 		
 
 }
-	 static class movementsRequest {
-
-	     private String accountId;
-
-
-	     public String getAccountId() {
-	            return accountId;
-	        }
-
-	     public void setAccountId(String accountId) {
-	            this.accountId = accountId;
-	        }
-	    }
+	 
 }
 
 
