@@ -23,16 +23,16 @@ import org.json.JSONObject;
 @RequestMapping(value = "/api/accounts")
 @Tag(name = "Account", description = "Account REST API")
 public class AddFundsController {
-    @Value("integrators.data.ip")
+    @Value("${integrators.data.ip}")
     private String dataIp;
 
-    @Value("integrators.data.port")
+    @Value("${integrators.data.port}")
     private String dataPort;
 
-    @Value("integrators.integrators.ip")
+    @Value("${integrators.integrators.ip}")
     private String providersIp;
 
-    @Value("integrators.integrators.port")
+    @Value("${integrators.integrators.port}")
     private String providersPort;
 
     @Autowired

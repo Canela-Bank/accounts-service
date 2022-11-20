@@ -19,10 +19,10 @@ import java.net.URL;
 @RequestMapping(value = "/api/account")
 @Tag(name = "Account", description = "Account REST API")
 public class AtmWithdrawalController {
-    @Value("integrators.providers.ip")
+    @Value("${integrators.providers.ip}")
     private String providersIp;
 
-    @Value("integrators.providers.port")
+    @Value("${integrators.providers.port}")
     private String providersPort;
 
     @Operation(summary = "withdraw from  saving account", description = "Using an ATM to withdraw money from savings account", tags = {"Account"})

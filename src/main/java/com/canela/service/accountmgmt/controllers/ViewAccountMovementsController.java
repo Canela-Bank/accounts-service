@@ -26,10 +26,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @RestController
 @RequestMapping(value = "/api/accounts")
 public class ViewAccountMovementsController {
-	@Value("integrators.data.ip")
+	@Value("${integrators.data.ip}")
 	private String dataIp;
 
-	@Value("integrators.data.port")
+	@Value("{$integrators.data.port}")
 	private String dataPort;
 
  	@GetMapping(value = "/viewMovements/{accountId}" )

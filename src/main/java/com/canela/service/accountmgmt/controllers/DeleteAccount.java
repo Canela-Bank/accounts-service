@@ -16,10 +16,10 @@ import java.net.URL;
 @RestController
 @RequestMapping("/account")
 public class DeleteAccount {
-    @Value("integrators.data.ip")
+    @Value("${integrators.data.ip}")
     private String dataIp;
 
-    @Value("integrators.data.port")
+    @Value("{$integrators.data.port}")
     private String dataPort;
 
     @DeleteMapping("/{account}")
