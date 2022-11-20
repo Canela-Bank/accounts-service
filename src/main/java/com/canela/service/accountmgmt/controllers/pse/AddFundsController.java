@@ -29,10 +29,10 @@ public class AddFundsController {
     @Value("${integrators.data.port}")
     private String dataPort;
 
-    @Value("${integrators.integrators.ip}")
+    @Value("${integrators.providers.ip}")
     private String providersIp;
 
-    @Value("${integrators.integrators.port}")
+    @Value("${integrators.providers.port}")
     private String providersPort;
 
     @Autowired
