@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,17 @@ import org.json.JSONObject;
 @RequestMapping(value = "/api/accounts")
 @Tag(name = "Account", description = "Account REST API")
 public class AddFundsController {
+    @Value("${integrators.data.ip}")
+    private String dataIp;
+
+    @Value("${integrators.data.port}")
+    private String dataPort;
+
+    @Value("${integrators.providers.ip}")
+    private String providersIp;
+
+    @Value("${integrators.providers.port}")
+    private String providersPort;
 
     @Autowired
     private EmailSenderService service;
@@ -35,7 +47,7 @@ public class AddFundsController {
         URL url = null;
         try {
             //Connection with PSE
-            url = new URL("http://localhost:3000/api/prov/pse/approve");
+            url = new URL("http://" + providersIp + ":" + providersPort + "/api/prov/pse/approve");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             int codeResponse = conn.getResponseCode();
@@ -44,7 +56,7 @@ public class AddFundsController {
             if(codeResponse == HttpURLConnection.HTTP_OK){
 
                 //Connection with GraphQL
-                URL getAccountUrl = new URL("http://localhost:3002/graphql?query=query%7B%0A%20%20getAccountById(id%3A%22"+id+"%22)%7B%0A%20%20%20%20id%0A%20%20%20%20balance%0A%20%20%20%20user_id%2C%0A%20%20%20%20user_document_type%0A%20%20%7D%0A%7D%0A");
+                URL getAccountUrl = new URL("http://" + dataIp + ":" + dataPort + "/graphql?query=query%7B%0A%20%20getAccountById(id%3A%22"+id+"%22)%7B%0A%20%20%20%20id%0A%20%20%20%20balance%0A%20%20%20%20user_id%2C%0A%20%20%20%20user_document_type%0A%20%20%7D%0A%7D%0A");
                 HttpURLConnection connAccount = (HttpURLConnection) getAccountUrl.openConnection();
                 connAccount.setRequestMethod("GET");
 
@@ -75,12 +87,12 @@ public class AddFundsController {
                         String user_id_type = jsonAccount.get("user_document_type").toString();
 
                         //Update balance of the account
-                        URL updateAccount = new URL("http://localhost:3002/graphql?query=mutation%7B%0A%20%20createAccount%20(id%3A%22"+id+"%22%2C%20balance%3A%20"+newBalance+"%2C%20user_id%3A%20%22"+user_id+"%22%2C%20user_document_type%3A%20"+user_id_type+")%7B%0A%20%20%20%20id%0A%20%20%20%20balance%0A%20%20%20%20user_id%2C%0A%20%20%20%20user_document_type%0A%20%20%7D%0A%7D%0A");
+                        URL updateAccount = new URL("http://" + dataIp + ":" + dataPort + "/graphql?query=mutation%7B%0A%20%20createAccount%20(id%3A%22"+id+"%22%2C%20balance%3A%20"+newBalance+"%2C%20user_id%3A%20%22"+user_id+"%22%2C%20user_document_type%3A%20"+user_id_type+")%7B%0A%20%20%20%20id%0A%20%20%20%20balance%0A%20%20%20%20user_id%2C%0A%20%20%20%20user_document_type%0A%20%20%7D%0A%7D%0A");
                         HttpURLConnection connUpdate = (HttpURLConnection) updateAccount.openConnection();
                         connUpdate.setRequestMethod("POST");
 
                         if (connUpdate.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                            URL getUserUrl = new URL("http://localhost:3002/graphql?query=query{%0A%20%20getUserById(document_type%3A%20"+user_id_type+"%2C%20document%3A%20%22"+user_id+"%22){%0A%20%20%20%20document%2C%0A%20%20%20%20document_type%2C%0A%20%20%20%20name%2C%0A%20%20%20%20last_name%2C%20%0A%20%20%20%20birth_date%2C%20%0A%20%20%20%20address%2C%20%0A%20%20%20%20phone_number%2C%20%0A%20%20%20%20email%0A%20%20}%0A}");
+                            URL getUserUrl = new URL("http://" + dataIp + ":" + dataPort + "/graphql?query=query{%0A%20%20getUserById(document_type%3A%20"+user_id_type+"%2C%20document%3A%20%22"+user_id+"%22){%0A%20%20%20%20document%2C%0A%20%20%20%20document_type%2C%0A%20%20%20%20name%2C%0A%20%20%20%20last_name%2C%20%0A%20%20%20%20birth_date%2C%20%0A%20%20%20%20address%2C%20%0A%20%20%20%20phone_number%2C%20%0A%20%20%20%20email%0A%20%20}%0A}");
                             HttpURLConnection connUser = (HttpURLConnection) getUserUrl.openConnection();
                             connUser.setRequestMethod("GET");
 
