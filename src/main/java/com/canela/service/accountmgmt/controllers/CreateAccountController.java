@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.http.HttpResponse;
@@ -29,9 +31,11 @@ public class CreateAccountController {
 
         try {
             // GraphQL info
-            String url = "http://10.1.0.19:3002/graphql";
+            String url = "http://${integrators.data.ip}:${integrators.data.port}/graphql";
             String operation = "createAccount"; //INSERT OPERATION QUERY HERE
-            String query = "mutation{createAccount(id:\""+newAccount.userDocument+"\",balance:"+newAccount.balance+",user_id:\""+newAccount.userDocument+"\",user_document_type:"+newAccount.typeDocument+"){\n"
+            Random random = new Random();
+            String accountId = String.valueOf(random.nextLong(1000000000L));
+            String query = "mutation{createAccount(id:\""+accountId+"\",balance:"+newAccount.balance+",user_id:\""+newAccount.userDocument+"\",user_document_type:"+newAccount.typeDocument+"){\n"
                     + "  id\n"
                     + "  balance\n"
                     + "  user_id\n"

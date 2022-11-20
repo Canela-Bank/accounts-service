@@ -31,7 +31,7 @@ public class ViewAccountMovementsController {
 	 @CrossOrigin("*")
 	    public ResponseEntity<String> viewMovements(@PathVariable String accountId) {
 		 try {
-			 String url = "http://10.1.0.19:3002/graphql";
+			 String url = "http://${data.ip}:3002/graphql";
 			 String operation = "getMovementsByOriginAccount";
 			 String query = "query{getMovementsByOriginAccount(account_id:\""+accountId+"\"){\n"
 			 		+ "  origin_account\n"

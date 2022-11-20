@@ -30,7 +30,7 @@ public class GetUserAccountsController {
 	 @GetMapping(value = "/getAccounts/{document}/{typeDocument}" )
 	    public ResponseEntity<String> getAccounts(@PathVariable String document, @PathVariable String typeDocument) {
 		 try {
-			 String url = "http://10.1.0.19:3002/graphql";
+			 String url = "http://${integrators.data.ip}:${integrators.data.port}/graphql";
 			 String operation = "getAccountsByUser";
 			 String query = "query{getAccountsByUser(user_document:\""+document+"\",user_document_type:"+ typeDocument+"){\n"
 			 		+ "  id\n"

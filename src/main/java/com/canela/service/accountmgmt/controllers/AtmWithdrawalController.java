@@ -26,7 +26,7 @@ public class AtmWithdrawalController {
                                            @RequestBody AtmRequest req) {
         String response = null;
         try {
-            URL url = new URL("http://localhost:9010/redaval/solicitud"); //TODO: Change when providers integrator is ready
+            URL url = new URL("http://${integrators.providers.ip}:${integrators.providers.port}/redaval/solicitud"); //TODO: Change when providers integrator is ready
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             int codeResponse = conn.getResponseCode();

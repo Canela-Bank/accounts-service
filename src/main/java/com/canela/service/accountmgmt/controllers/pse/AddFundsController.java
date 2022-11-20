@@ -36,7 +36,7 @@ public class AddFundsController {
         URL url = null;
         try {
             //Connection with PSE
-            url = new URL("http://localhost:3000/api/prov/pse/approve");
+            url = new URL("http://${integrators.providers.ip}:${integrators.providers.port}/api/prov/pse/approve");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             int codeResponse = conn.getResponseCode();
@@ -45,7 +45,7 @@ public class AddFundsController {
             if(codeResponse == HttpURLConnection.HTTP_OK){
 
                 //Connection with GraphQL
-                URL getAccountUrl = new URL("http://localhost:3001/graphql?query=%7B%0A%20%20getAccountById%20(id%3A%22"+ id +"%22)%7B%0A%20%20%20%20id%0A%20%20%20%20balance%0A%20%20%20%20user_id%0A%20%20%7D%0A%7D%0A");
+                URL getAccountUrl = new URL("http://${integrators.data.ip}:${integrators.data.port}/graphql?query=%7B%0A%20%20getAccountById%20(id%3A%22"+ id +"%22)%7B%0A%20%20%20%20id%0A%20%20%20%20balance%0A%20%20%20%20user_id%0A%20%20%7D%0A%7D%0A");
                 HttpURLConnection connAccount = (HttpURLConnection) getAccountUrl.openConnection();
                 connAccount.setRequestMethod("GET");
 
@@ -75,12 +75,12 @@ public class AddFundsController {
                         String user_id = (String) jsonAccount.get("user_id");
 
                         //Update balance of the account
-                        URL updateAccount = new URL("http://localhost:3001/graphql?query=mutation%7B%0A%20%20createAccount%20(id%3A%22" + id + "%22%2C%20balance%3A%20" + newBalance + "%2C%20user_id%3A%20%22" + user_id + "%22)%7B%0A%20%20%20%20id%0A%20%20%20%20balance%0A%20%20%20%20user_id%0A%20%20%7D%0A%7D%0A");
+                        URL updateAccount = new URL("http://${integrators.data.ip}:${integrators.data.port}/graphql?query=mutation%7B%0A%20%20createAccount%20(id%3A%22" + id + "%22%2C%20balance%3A%20" + newBalance + "%2C%20user_id%3A%20%22" + user_id + "%22)%7B%0A%20%20%20%20id%0A%20%20%20%20balance%0A%20%20%20%20user_id%0A%20%20%7D%0A%7D%0A");
                         HttpURLConnection connUpdate = (HttpURLConnection) updateAccount.openConnection();
                         connUpdate.setRequestMethod("POST");
 
                         if (connUpdate.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                            URL getUserUrl = new URL("http://localhost:3001/graphql?query=%7B%0A%20%20getUserById%20(document%3A%22"+user_id+"%22%2C%20document_type%3ACC)%7B%0A%20%20%20%20document%0A%20%20%20%20document_type%0A%20%20%20%20name%0A%20%20%20%20last_name%0A%20%20%20%20birth_date%0A%20%20%20%20address%0A%20%20%20%20phone_number%0A%20%20%20%20email%0A%20%20%7D%0A%7D%0A");
+                            URL getUserUrl = new URL("http://${integrators.data.ip}:${integrators.data.port}/graphql?query=%7B%0A%20%20getUserById%20(document%3A%22"+user_id+"%22%2C%20document_type%3ACC)%7B%0A%20%20%20%20document%0A%20%20%20%20document_type%0A%20%20%20%20name%0A%20%20%20%20last_name%0A%20%20%20%20birth_date%0A%20%20%20%20address%0A%20%20%20%20phone_number%0A%20%20%20%20email%0A%20%20%7D%0A%7D%0A");
                             HttpURLConnection connUser = (HttpURLConnection) getUserUrl.openConnection();
                             connUser.setRequestMethod("GET");
 

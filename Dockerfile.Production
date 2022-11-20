@@ -8,4 +8,5 @@ RUN mvn -f /home/app/pom.xml clean package
 FROM arm64v8/openjdk:17
 COPY --from=build home/app/target/account-mgmt-0.0.1-SNAPSHOT.jar /home/app/app.jar
 EXPOSE 9005
-ENTRYPOINT ["java","-jar","/home/app/app.jar"]
+ARG environment
+ENTRYPOINT java -jar -D spring.profiles.active=$environment /home/app/app.jar
