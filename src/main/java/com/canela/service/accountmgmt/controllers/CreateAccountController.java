@@ -7,7 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.http.HttpResponse;
@@ -15,6 +14,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +25,18 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @RestController
 @RequestMapping(value = "/api/accounts")
 public class CreateAccountController {
+    @Value("integrators.data.ip")
+    private String dataIp;
+
+    @Value("integrators.data.port")
+    private String dataPort;
+
     @PostMapping(value = "/create-savings" )
     public ResponseEntity<String> createNewAccount(@RequestBody createAccountRequest newAccount) {
 
         try {
             // GraphQL info
-            String url = "http://${integrators.data.ip}:${integrators.data.port}/graphql";
+            String url = "http://" + dataIp + ":" + dataPort + "/graphql";
             String operation = "createAccount"; //INSERT OPERATION QUERY HERE
             Random random = new Random();
             String accountId = String.valueOf(random.nextLong(1000000000L));

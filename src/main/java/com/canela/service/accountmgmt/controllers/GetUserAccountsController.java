@@ -12,13 +12,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,68 +25,51 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @RestController
 @RequestMapping(value = "/api/accounts")
 public class GetUserAccountsController {
-	 @GetMapping(value = "/getAccounts/{document}/{typeDocument}" )
-	    public ResponseEntity<String> getAccounts(@PathVariable String document, @PathVariable String typeDocument) {
-		 try {
-			 String url = "http://${integrators.data.ip}:${integrators.data.port}/graphql";
-			 String operation = "getAccountsByUser";
-			 String query = "query{getAccountsByUser(user_document:\""+document+"\",user_document_type:"+ typeDocument+"){\n"
-			 		+ "  id\n"
-			 		+ "  balance\n"
-			 		+ "  user_id\n"
-			 		+ "  user_document_type\n"
-			 		+ "}}";
-			
-				 CloseableHttpClient client = HttpClientBuilder.create().build();
-			        HttpGet requestGraphQL = new HttpGet(url);
-			        URI uri = new URIBuilder(requestGraphQL.getURI())
-			                .addParameter("query", query)
-			                .build();
-			        requestGraphQL.setURI(uri);
-			        HttpResponse response =  client.execute(requestGraphQL);
-			        InputStream inputResponse = response.getEntity().getContent();
-			        String actualResponse = new BufferedReader(
-			                new InputStreamReader(inputResponse, StandardCharsets.UTF_8))
-			                .lines()
-			                .collect(Collectors.joining("\n"));
+	@Value("integrators.data.ip")
+	private String dataIp;
 
-			        final ObjectNode node = new ObjectMapper().readValue(actualResponse, ObjectNode.class);
-			        
-			        JsonNode Accounts = node.get("data").get(operation);			       
-			        
-			        if(Accounts.isEmpty()) {
-			        	 return ResponseEntity.status(HttpURLConnection.HTTP_NOT_FOUND).body("Lo sentimos, hubo un error.");
-			        }
-			        else{
-			        	 JsonNode UserAccounts = node.get("data").get(operation);
-					        
-					     return ResponseEntity.status(HttpURLConnection.HTTP_OK).body(UserAccounts.toString());
-			        }
+	@Value("integrators.data.port")
+	private String dataPort;
+
+	 @GetMapping(value = "/getAccounts/{document}/{typeDocument}" )
+	public ResponseEntity<String> getAccounts(@PathVariable String document, @PathVariable String typeDocument) {
+	 try {
+		 String url = "http://" + dataIp + ":" + dataPort + "/graphql";
+		 String operation = "getAccountsByUser";
+		 String query = "query{getAccountsByUser(user_document:\""+document+"\",user_document_type:"+ typeDocument+"){\n"
+				+ "  id\n"
+				+ "  balance\n"
+				+ "  user_id\n"
+				+ "  user_document_type\n"
+				+ "}}";
+
+			 CloseableHttpClient client = HttpClientBuilder.create().build();
+				HttpGet requestGraphQL = new HttpGet(url);
+				URI uri = new URIBuilder(requestGraphQL.getURI())
+						.addParameter("query", query)
+						.build();
+				requestGraphQL.setURI(uri);
+				HttpResponse response =  client.execute(requestGraphQL);
+				InputStream inputResponse = response.getEntity().getContent();
+				String actualResponse = new BufferedReader(
+						new InputStreamReader(inputResponse, StandardCharsets.UTF_8))
+						.lines()
+						.collect(Collectors.joining("\n"));
+
+				final ObjectNode node = new ObjectMapper().readValue(actualResponse, ObjectNode.class);
+
+				JsonNode Accounts = node.get("data").get(operation);
+
+				if(Accounts.isEmpty()) {
+					 return ResponseEntity.status(HttpURLConnection.HTTP_NOT_FOUND).body("Lo sentimos, hubo un error.");
+				}
+				else{
+					 JsonNode UserAccounts = node.get("data").get(operation);
+
+					 return ResponseEntity.status(HttpURLConnection.HTTP_OK).body(UserAccounts.toString());
+				}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	 }
-	 
-	 static class accountRequest {
-	     private String userDocument;
-	     private int typeDocument;
-
-		public String getUserDocument() {
-			return userDocument;
-		}
-
-		public void setUserDocument(String userDocument) {
-			this.userDocument = userDocument;
-		}
-
-		public int getTypeDocument() {
-			return typeDocument;
-		}
-
-		public void setTypeDocument(int typeDocument) {
-			this.typeDocument = typeDocument;
-		}
- 
-	 }
-	
+ 	}
 }

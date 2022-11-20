@@ -1,5 +1,6 @@
 package com.canela.service.accountmgmt.controllers;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,12 +16,17 @@ import java.net.URL;
 @RestController
 @RequestMapping("/account")
 public class DeleteAccount {
+    @Value("integrators.data.ip")
+    private String dataIp;
+
+    @Value("integrators.data.port")
+    private String dataPort;
 
     @DeleteMapping("/{account}")
     public ResponseEntity<String> delete(@PathVariable String account){
         URL url = null;
         try {
-            url = new URL("http://${integrators.data.ip}:${integrators.data.port}/graphql?query=mutation{deleteAccount(ac1:\""+ account +"\"){id}}");
+            url = new URL("http://" + dataIp + ":" + dataPort + "/graphql?query=mutation{deleteAccount(ac1:\""+ account +"\"){id}}");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             int response = conn.getResponseCode();

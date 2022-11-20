@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,15 +19,20 @@ import java.net.URL;
 @RequestMapping(value = "/api/account")
 @Tag(name = "Account", description = "Account REST API")
 public class AtmWithdrawalController {
+    @Value("integrators.providers.ip")
+    private String providersIp;
+
+    @Value("integrators.providers.port")
+    private String providersPort;
+
     @Operation(summary = "withdraw from  saving account", description = "Using an ATM to withdraw money from savings account", tags = {"Account"})
     @PostMapping(value = "withdraw/atm/{accountId}")
-    @CrossOrigin("*")
     public ResponseEntity<String> addFunds(@PathVariable(value = "accountId")
                                            @Parameter(name = "Amount id", description = "Number of the account that will be updated", example = "33023227") String id,
                                            @RequestBody AtmRequest req) {
         String response = null;
         try {
-            URL url = new URL("http://${integrators.providers.ip}:${integrators.providers.port}/redaval/solicitud"); //TODO: Change when providers integrator is ready
+            URL url = new URL("http://" + providersIp + ":" + providersPort + "/redaval/solicitud"); //TODO: Change when providers integrator is ready
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             int codeResponse = conn.getResponseCode();
