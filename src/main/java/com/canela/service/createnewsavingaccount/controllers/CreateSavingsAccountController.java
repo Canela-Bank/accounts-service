@@ -36,7 +36,7 @@ public class CreateSavingsAccountController {
 			// GraphQL info 
 			 String url = "http://localhost:3001/graphql";
 			 String operation = "createAccount"; //INSERT OPERATION QUERY HERE
-			 String query = "mutation{createAccount(id:\""+newAccount.accountId+"\",balance:"+newAccount.balance+",user_id:\""+newAccount.userDocument+"\",user_document_type:"+newAccount.typeDocument+"){\n"
+			 String query = "mutation{createAccount(id:\""+newAccount.userDocument+"\",balance:"+newAccount.balance+",user_id:\""+newAccount.userDocument+"\",user_document_type:"+newAccount.typeDocument+"){\n"
 			 		+ "  id\n"
 			 		+ "  balance\n"
 			 		+ "  user_id\n"
@@ -80,16 +80,10 @@ public class CreateSavingsAccountController {
     
     static class createAccountRequest {
 
-	     private String accountId;
 	     private double balance;
 	     private String userDocument;
 	     private int typeDocument;
-		public String getAccountId() {
-			return accountId;
-		}
-		public void setAccountId(String accountId) {
-			this.accountId = accountId;
-		}
+		
 		public double getBalance() {
 			return balance;
 		}
