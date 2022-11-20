@@ -1,5 +1,10 @@
 package com.canela.service.accountmgmt.controllers;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,10 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
+import java.net.*;
 
 @RestController
 @RequestMapping("/account")
@@ -22,15 +24,24 @@ public class DeleteAccount {
     @Value("${integrators.data.port}")
     private String dataPort;
 
-    @DeleteMapping("/{account}")
+    @DeleteMapping("/delete/{account}")
     public ResponseEntity<String> delete(@PathVariable String account){
-        URL url = null;
+        String url = "http://" + dataIp + ":" + dataPort + "/graphql";
         try {
-            url = new URL("http://" + dataIp + ":" + dataPort + "/graphql?query=mutation{deleteAccount(ac1:\""+ account +"\"){id}}");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            int response = conn.getResponseCode();
-            if(response == HttpURLConnection.HTTP_OK){
+            CloseableHttpClient client = HttpClientBuilder.create().build();
+            HttpPost requestGraphQL = new HttpPost(url);
+            String query = String.format("mutation {\n" +
+                    "  deleteAccount(id: \"%s\") {\n" +
+                    "    message\n" +
+                    "  }\n" +
+                    "}", account);
+            URI uri = new URIBuilder(requestGraphQL.getURI())
+                    .addParameter("query", query)
+                    .build();
+            requestGraphQL.setURI(uri);
+            HttpResponse full_response = client.execute(requestGraphQL);
+            int response = full_response.getStatusLine().getStatusCode();
+            if(response == HttpStatus.OK.value()){
                 return ResponseEntity.status(HttpStatus.OK).body("Eliminado");
             }
         } catch (MalformedURLException e) {
