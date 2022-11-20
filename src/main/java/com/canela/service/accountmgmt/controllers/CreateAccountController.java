@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @RestController
 @RequestMapping(value = "/api/accounts")
 public class CreateAccountController {
-    @CrossOrigin("*")
     @PostMapping(value = "/create-savings" )
     public ResponseEntity<String> createNewAccount(@RequestBody createAccountRequest newAccount) {
 
