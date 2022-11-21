@@ -35,7 +35,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/account/transfer")
+@RequestMapping("/api/accounts/transfer")
 public class TransferFromToController {
 
     private ObjectNode getGraphQLAccount(String account_id, String url) {
