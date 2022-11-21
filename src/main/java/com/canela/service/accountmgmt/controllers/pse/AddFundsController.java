@@ -48,6 +48,7 @@ public class AddFundsController {
         try {
             //Connection with PSE
             url = new URL("http://" + providersIp + ":" + providersPort + "/api/prov/pse/approve");
+            System.out.println(url.toString());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             int codeResponse = conn.getResponseCode();
