@@ -16,6 +16,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +38,11 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/accounts/transfer")
 public class TransferFromToController {
+    @Value("${integrators.data.ip}")
+    private String dataIp;
 
+    @Value("${integrators.data.port}")
+    private String dataPort;
     private ObjectNode getGraphQLAccount(String account_id, String url) {
         try {
             CloseableHttpClient client = HttpClientBuilder.create().build();
@@ -76,7 +81,7 @@ public class TransferFromToController {
 
     @PostMapping
     public ResponseEntity<String> transfer(@RequestBody TransferToFromEntity transferForm) {
-        String url = "http://localhost:3002/graphql";
+        String url = "http://" + dataIp + ":" + dataPort + "/graphql";
 
         try {
             ObjectNode originNode = getGraphQLAccount(transferForm.getOrigin_account(), url);
